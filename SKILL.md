@@ -1,6 +1,10 @@
 ---
 name: clip-and-post
 description: Turn a YouTube video into a publish-ready clip, or an article into a NIP-84 quote highlight, and publish it to Nostr after approval. Use whenever someone gives a YouTube URL and wants a clip, an excerpt, a highlight, "the interesting bit", a segment cut out, something trimmed for social, or a post drafted from a video; or gives an article, blog post or news URL and wants a quote, a pull-quote, a highlight, or the key passage posted. Also use when asked to find where a named topic is discussed in a long talk, podcast, lecture, interview or livestream, to pull a quote or moment out of a video or a piece of writing, or to compress something long down to its substance. It always lists the topics first, saves them to topics.txt and asks which topic or angle to process, with a recommendation; with --topics, or when asked only what a video or article covers, it stops after the list. Reach for it as soon as a URL appears alongside ffmpeg, yt-dlp, transcripts, timestamps, subtitles, "extract", "highlight", "quote", "schedule" or "post later" — the failure modes below are silent and will waste a long download or publish a misquote if you improvise instead.
+compatibility: Linux only for now. Needs ffmpeg, ffprobe, uv, bun or deno, nak, and the nostr-java-mcp server; secret-tool (libsecret-tools) only with the os-keychain keystore.
+metadata:
+  version: "1.1.0"
+  changelog: CHANGELOG.md
 ---
 
 # Clip and post

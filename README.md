@@ -45,6 +45,7 @@ Enable lingering (`loginctl enable-linger "$USER"`) if a scheduled post has to s
 
 ```
 SKILL.md              the skill: workflow, rules, failure modes
+CHANGELOG.md          changes per version (version lives in SKILL.md metadata.version)
 scripts/
   install.sh          choose and print the output folder
   transcript.py       captions: metadata, chapters, bucketed or windowed cues, grep
