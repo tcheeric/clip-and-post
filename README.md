@@ -15,13 +15,18 @@ modes. This README only covers installing and maintaining it.
 - `uv` (yt-dlp runs as `uvx yt-dlp@latest`, never a system install)
 - a JavaScript runtime yt-dlp accepts (bun or deno; Node 20 is rejected)
 - `nak`, for reading events back from relays
-- [nostr-java-mcp](https://github.com/tcheeric/nostr-java) registered as the `nostr` MCP server,
-  started through a wrapper script that sets the keystore, identity, relays and Blossom servers
+- [nostr-java-mcp](https://github.com/tcheeric/nostr-java/tree/main/nostr-java-mcp), the MCP server
+  module of [nostr-java](https://github.com/tcheeric/nostr-java), registered as the `nostr` MCP server,
+  started through a wrapper script that sets the keystore, identity, relays and Blossom servers.
+  See [Run the Nostr MCP server](https://github.com/tcheeric/nostr-java/blob/main/docs/howto/run-the-mcp-server.md)
+  for building the jar, creating a key and wiring it into Claude Code
 - `libsecret-tools` (Debian/Ubuntu package name; it provides `secret-tool`), if you use
   nostr-java-mcp's default `os-keychain` keystore. On Linux the server reads the signing key
   from the desktop Secret Service (GNOME Keyring or KWallet) by running `secret-tool`, not
   through a native library, so without the tool it can't find the key. You can skip it if the
-  wrapper sets `-Dnostr.mcp.keystore.type=encrypted-file`. That is the better choice if you
+  wrapper sets `-Dnostr.mcp.keystore.type=encrypted-file` (see the
+  [configuration reference](https://github.com/tcheeric/nostr-java/blob/main/docs/howto/run-the-mcp-server.md#configuration-reference)).
+  That is the better choice if you
   schedule posts anyway: the desktop keychain is locked once you log out, so a post set to go
   out after logout could not be signed.
 
