@@ -28,7 +28,7 @@ modes. This README only covers installing and maintaining it.
 ## Install
 
 ```bash
-git clone <this repo> ~/IdeaProjects/clip-and-post
+git clone https://github.com/tcheeric/clip-and-post.git ~/IdeaProjects/clip-and-post
 ln -s ~/IdeaProjects/clip-and-post ~/.claude/skills/clip-and-post
 ~/IdeaProjects/clip-and-post/scripts/install.sh      # asks for the output folder, default ~/clip-and-post
 ```
