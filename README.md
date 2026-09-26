@@ -17,6 +17,13 @@ modes. This README only covers installing and maintaining it.
 - `nak`, for reading events back from relays
 - [nostr-java-mcp](https://github.com/tcheeric/nostr-java) registered as the `nostr` MCP server,
   started through a wrapper script that sets the keystore, identity, relays and Blossom servers
+- `libsecret-tools` (Debian/Ubuntu package name; it provides `secret-tool`), if you use
+  nostr-java-mcp's default `os-keychain` keystore. On Linux the server reads the signing key
+  from the desktop Secret Service (GNOME Keyring or KWallet) by running `secret-tool`, not
+  through a native library, so without the tool it can't find the key. You can skip it if the
+  wrapper sets `-Dnostr.mcp.keystore.type=encrypted-file`. That is the better choice if you
+  schedule posts anyway: the desktop keychain is locked once you log out, so a post set to go
+  out after logout could not be signed.
 
 ## Install
 

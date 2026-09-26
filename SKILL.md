@@ -107,6 +107,11 @@ twenty-minute one.
 **Linux only, for now.** The scripts and commands here have only been used on Linux.
 macOS and Windows are untested and will likely need changes.
 
+If nostr-java-mcp uses its default `os-keychain` keystore, it needs `secret-tool`
+(package `libsecret-tools`) to read the signing key from the desktop keychain. With
+the `encrypted-file` keystore it doesn't, and that is also the only one that can
+sign a scheduled post after logout (see "scheduling a post for later").
+
 `ffmpeg` and `ffprobe` must be present. For yt-dlp, **do not use a system install** —
 distribution packages go stale within months and YouTube breaks stale extractors
 constantly. Run it through `uvx yt-dlp@latest` (or `pipx run`).
