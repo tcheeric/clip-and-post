@@ -10,6 +10,7 @@ modes. This README only covers installing and maintaining it.
 
 ## Requirements
 
+- Linux. It is the only platform tested so far, and macOS and Windows are untested.
 - `ffmpeg` and `ffprobe`
 - `uv` (yt-dlp runs as `uvx yt-dlp@latest`, never a system install)
 - a JavaScript runtime yt-dlp accepts (bun or deno; Node 20 is rejected)

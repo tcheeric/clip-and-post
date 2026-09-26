@@ -104,6 +104,9 @@ twenty-minute one.
 
 ## Prerequisites
 
+**Linux only, for now.** The scripts and commands here have only been used on Linux.
+macOS and Windows are untested and will likely need changes.
+
 `ffmpeg` and `ffprobe` must be present. For yt-dlp, **do not use a system install** —
 distribution packages go stale within months and YouTube breaks stale extractors
 constantly. Run it through `uvx yt-dlp@latest` (or `pipx run`).
