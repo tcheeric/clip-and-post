@@ -7,6 +7,21 @@ or documented requirements, patch for fixes and wording.
 When releasing, bump `metadata.version` in `SKILL.md`, add a section here, and tag the commit
 `vX.Y.Z`.
 
+## [1.2.0] - 2026-09-29
+
+### Added
+- Batch mode: several sources in one request, videos and articles mixed. Each source keeps its own
+  branch, folder and event; the topic question, draft approval and event approval are each asked
+  once for the whole batch, answered per item. Publishing is staggered by default.
+- `scripts/batch-read.sh`: runs the read step for every source in parallel, one numbered scratch
+  directory each so articles don't overwrite each other's `article.html`.
+- `scripts/upload.py`: uploads a local file to Blossom through a one-off nostr-java-mcp instance
+  with `allow-private-hosts`, which the running MCP server refuses.
+
+### Fixed
+- The upload step now says `allow-private-hosts` has to be passed as a JVM system property
+  (`JAVA_TOOL_OPTIONS`); a `--nostr.mcp...` program argument is silently ignored.
+
 ## [1.1.0] - 2026-09-26
 
 ### Added
