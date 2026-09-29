@@ -1,9 +1,9 @@
 ---
 name: clip-and-post
-description: Turn a YouTube video into a publish-ready clip, or an article into a NIP-84 quote highlight, and publish it to Nostr after approval. Use whenever someone gives a YouTube URL and wants a clip, an excerpt, a highlight, "the interesting bit", a segment cut out, something trimmed for social, or a post drafted from a video; or gives an article, blog post or news URL and wants a quote, a pull-quote, a highlight, or the key passage posted. Also use when asked to find where a named topic is discussed in a long talk, podcast, lecture, interview or livestream, to pull a quote or moment out of a video or a piece of writing, or to compress something long down to its substance. It always lists the topics first, saves them to topics.txt and asks which topic or angle to process, with a recommendation; with --topics, or when asked only what a video or article covers, it stops after the list. Reach for it as soon as a URL appears alongside ffmpeg, yt-dlp, transcripts, timestamps, subtitles, "extract", "highlight", "quote", "schedule" or "post later" — the failure modes below are silent and will waste a long download or publish a misquote if you improvise instead.
+description: Turn a YouTube video into a publish-ready clip, or an article into a NIP-84 quote highlight, and publish it to Nostr after approval; several URLs of either kind can be processed together as a batch. Use whenever someone gives a YouTube URL and wants a clip, an excerpt, a highlight, "the interesting bit", a segment cut out, something trimmed for social, or a post drafted from a video; or gives an article, blog post or news URL and wants a quote, a pull-quote, a highlight, or the key passage posted. Also use when asked to find where a named topic is discussed in a long talk, podcast, lecture, interview or livestream, to pull a quote or moment out of a video or a piece of writing, or to compress something long down to its substance. It always lists the topics first, saves them to topics.txt and asks which topic or angle to process, with a recommendation; with --topics, or when asked only what a video or article covers, it stops after the list. Reach for it as soon as a URL appears alongside ffmpeg, yt-dlp, transcripts, timestamps, subtitles, "extract", "highlight", "quote", "schedule" or "post later" — the failure modes below are silent and will waste a long download or publish a misquote if you improvise instead.
 compatibility: Linux only for now. Needs ffmpeg, ffprobe, uv, bun or deno, nak, and the nostr-java-mcp server; secret-tool (libsecret-tools) only with the os-keychain keystore.
 metadata:
-  version: "1.1.0"
+  version: "1.2.0"
   changelog: CHANGELOG.md
 ---
 
@@ -28,6 +28,9 @@ carry a habit from one branch into the other.
 A YouTube or video URL → branch A. Any other page with prose on it → branch B. If
 the input is a video *of* an article, or an article *about* a video, ask which one
 they mean rather than guessing; the output kinds are different and only one is right.
+
+Several sources in one request, of either kind or both, is a batch: see *Several
+sources at once* below. Each source still takes its own branch.
 
 ## The flow: topics first, then the person picks
 
@@ -93,6 +96,52 @@ List each distinct topic or argument in the order it appears:
 - **Say what you couldn't see.** A paywalled article or a missing caption track
   limits the list to what was readable; say so rather than listing topics you didn't
   read.
+
+## Several sources at once
+
+A batch is the same flow run side by side, with each gate taken once for all of them.
+**Every source still becomes its own event** in its own folder, with its own
+`topics.txt`. Merging several sources into a single post is a different job; if that
+is what they want, ask rather than guess.
+
+1. **Read them all in parallel.** URLs go through one command:
+
+   ```bash
+   scripts/batch-read.sh "$SCRATCH" URL1 URL2 URL3
+   ```
+
+   It gives each source its own numbered directory and prints one status line each.
+   For a Reader document, fetch it with the Reader tool and read its `source_url`
+   like any other URL. A failure (no captions, paywall, 403) doesn't hold up the
+   others: fix it the way the single-source path would (`--list-subs`, `--lang`),
+   or report it and carry on with the rest.
+2. **Map every source and ask once.** Save each `topics.txt`, then show the maps one
+   after another, numbered by source, each ending with its own recommendation. Ask a
+   single question and expect a per-source answer: "1: the no-military-option bit,
+   2: skip, 3: your pick". A skipped source stops there, with its `topics.txt` kept.
+   Angles given in the request go through without asking, as in the single case.
+3. **Process each chosen source through its branch.** Video downloads (A3) can run in
+   parallel. Encodes (A4) are CPU-bound, so run them one after another. Nothing is
+   uploaded yet.
+4. **Show every draft together, then get approval per item.** Number the drafts to
+   match the sources. The answer can be partial ("yes to 1 and 3, redo 2"); act only
+   on what was approved. Then upload the approved clips, build every event, and show
+   them all in full.
+5. **Approve the events per item too.** "Yes" covers exactly the events that were
+   shown in full, never one that was summarised or built afterwards. Anything
+   rebuilt after a change is shown again before it goes out.
+6. **Stagger the publishing by default.** Several notes landing in the same minute
+   flood followers' feeds and bury each other. Unless told to post all now, offer
+   one now and the rest spaced out with `schedule.sh`: `2h`, `4h`, `6h`, and so on.
+   Say the proposed times in the approval question, so that one yes covers the plan.
+   Linger and the other scheduling caveats apply once for the whole batch.
+7. **Verify each publish** as in the single case, then report the batch as a table:
+   one row per source, with kind, event id or timer and fire time, the relays that
+   accepted it, and any failures.
+
+Work through the batch in scratch (`$SCRATCH/01`, `02`, …) and copy each finished
+item into its own `<output>/<slug>/`. Two sources can want the same slug; suffix the
+second (`-2`) as usual.
 
 ---
 
@@ -430,7 +479,17 @@ before it is.
 works. Blossom returns the hosted URL, the sha256 and the byte count. The upload tool
 takes a **URL, not a file path**, so a local clip has to be served over HTTP for the
 server to fetch — on loopback, which needs
-`nostr.mcp.blossom.allow-private-hosts=true` on that one invocation.
+`nostr.mcp.blossom.allow-private-hosts=true` on that one invocation. The MCP server
+already running in the session refuses loopback, so do it with a one-off instance:
+
+```bash
+scripts/upload.py clip.mp4    # serves it on 127.0.0.1, uploads, prints url/sha256/size
+```
+
+The setting is read as a JVM system property, so the script passes it through
+`JAVA_TOOL_OPTIONS=-Dnostr.mcp.blossom.allow-private-hosts=true`. Passing
+`--nostr.mcp.blossom.allow-private-hosts=true` to the wrapper is silently ignored and
+the upload is refused as if nothing were set.
 
 **Uploading is publishing.** The blob goes to public, hash-addressed servers the
 moment you upload, before anyone has approved the post. So get approval on the text
