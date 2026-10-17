@@ -465,6 +465,11 @@ Then three things that protect the person posting:
   proper nouns, and it will be a real person's name that's wrong. Paraphrase, and say
   your summary is a paraphrase to be checked against the clip.
 - **Credit the source and link the original.** It's their recording, or their writing.
+  **The source link is always the last line of the post, on every platform version
+  and in both branches** (the YouTube or article URL, bare, with no label). Don't bury
+  it mid-text, and don't drop it from the short version. In the kind 1 note the blob
+  URL goes on the line just above it; in a 9802 highlight it ends the `comment`
+  (the URL is already tagged `source`, so it needs no second tag).
 - **Say it's an excerpt.** A tight clip or a pulled quote invites the "out of context"
   reply; naming it as an excerpt defuses that before it arrives.
 
@@ -503,8 +508,8 @@ sha256sum clip.mp4; stat -c %s clip.mp4
 ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=p=0 clip.mp4
 ```
 
-Content is the Nostr text with the blob URL on its own last line, paragraphs
-unwrapped — hard line breaks from a draft file render as ragged text in clients. Tags:
+Content is the Nostr text, then the blob URL on its own line, then the source video
+URL on its own last line, paragraphs unwrapped — hard line breaks from a draft file render as ragged text in clients. Tags:
 
 - `imeta` (NIP-92) — `url`, `m video/mp4`, `x <sha256>`, `size <bytes>`, `dim <w>x<h>`.
   This is what makes a client render an inline player instead of a bare link.
@@ -534,7 +539,7 @@ Because there is a `comment`, NIP-84 switches on two MUST rules about tag attrib
     ["r", "<article url>", "source"],
     ["context", "<the surrounding paragraph>"],
     ["p", "<author hex>", "<relay>", "author"],
-    ["comment", "<your take, plus any hashtags>"],
+    ["comment", "<your take, plus any hashtags>\n\n<article url>"],
     ["t", "<subject>"]
   ]
 }
