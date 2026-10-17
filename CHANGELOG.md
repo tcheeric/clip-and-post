@@ -7,6 +7,13 @@ or documented requirements, patch for fixes and wording.
 When releasing, bump `metadata.version` in `SKILL.md`, add a section here, and tag the commit
 `vX.Y.Z`.
 
+## [1.3.0] - 2026-10-17
+
+### Changed
+- The source link (YouTube or article URL) is always the last line of the post, in every platform
+  version and both branches. In a kind 1 note the blob URL sits on the line just above it; in a 9802
+  highlight the URL ends the `comment`.
+
 ## [1.2.0] - 2026-09-29
 
 ### Added
